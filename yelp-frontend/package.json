@@ -1,0 +1,78 @@
+{
+  "name": "yelp-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/styles": "^4.10.0",
+    "@react-google-maps/api": "^1.12.0",
+    "@reduxjs/toolkit": "^1.4.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "axios": "^0.20.0",
+    "bootstrap": "^4.5.3",
+    "bulma": "^0.9.0",
+    "cookie": "^0.4.1",
+    "google-maps-react": "^2.0.6",
+    "hookrouter": "^1.2.3",
+    "js-cookie": "^2.2.1",
+    "jwt-decode": "^3.0.0",
+    "mysql": "^2.18.1",
+    "react": "^16.13.1",
+    "react-chat-widget": "^3.0.5",
+    "react-cookie": "^4.0.3",
+    "react-cookies": "^0.1.1",
+    "react-dom": "^16.13.1",
+    "react-hook-google-maps": "0.0.3",
+    "react-images-upload": "^1.2.8",
+    "react-native": "^0.63.3",
+    "react-native-image-crop-picker": "^0.35.0",
+    "react-paginate": "^6.5.0",
+    "react-redux": "^7.2.2",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.3",
+    "reactstrap": "^8.7.0",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "stream-chat": "^2.7.3",
+    "stream-chat-react": "^3.1.7",
+    "universal-cookie": "^4.0.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react-hooks": "^4.1.2"
+  }
+}

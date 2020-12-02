@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PlaceOrder it renders the two buttons 1`] = `ShallowWrapper {}`;

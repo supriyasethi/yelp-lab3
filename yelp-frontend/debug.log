@@ -1,0 +1,5 @@
+[1009/145847.064:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
+[1010/171349.370:ERROR:settings.cc(430)] Settings version is not 5
+[1010/172349.386:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1011/194734.995:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1012/132640.665:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)

@@ -1,0 +1,3 @@
+// Jest Snapshot v1,
+
+exports[`SignupForm it renders the two buttons 1`] = `ShallowWrapper {}`;
