@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Menu(restaurantData) {
-	let restaurantMenu = restaurantData.restaurantData.restaurant.Menu;
+function Menu(props) {
+	
 
 	let history = useHistory();
 	const [checked, setChecked] = React.useState([1]);
@@ -54,72 +54,27 @@ function Menu(restaurantData) {
 		delievery: false,
 	});
   const newChecked = [...checked];
-  let [Menulist, setMenulist] = useState([]);	
+  //let [Menulist, setMenulist] = useState([]);	
   const[currentPage, setCurrentPage] = useState(1);
-  const[postsPerPage] = useState(5);
-  
-//   const fetchMenu = async (PageNo = 0) => {
-// 		await axios
-// 			.get(serverUrl + "get/menu", {
-// 				params: {
-// 					restaurantId: localStorage.getItem('restaurant_id'),
-// 					PageNo,
-// 				},
-// 				withCredentials: true,
-// 			})
-// 			.then((response) => {
-// 				console.log("getMenu", response);
-// 			//	let response_data = JSON.parse(response.data);
-// 				console.log("response_data", response.data);
-// 				setMenulist(response.data[0]);
-// 				setPageno(PageNo);
-// 				setPageCount(5);
-// 				setTotalCount(response.data[1]);				
-// 			})
-// 			.catch((error) => {
-// 				console.log("error", error);
-// 			});
-// 	};
+  const[postsPerPage] = useState(5);  
+
 const indexofLastPost = currentPage * postsPerPage;
 const indexofFirstPost = indexofLastPost - postsPerPage;
-const currentMenu = restaurantMenu.slice(indexofFirstPost, indexofLastPost);
-const menucount = restaurantMenu.length;
+//const currentMenu = restaurantMenu.slice(indexofFirstPost, indexofLastPost);
+const currentMenu = props.restaurantStore.Menu.slice(indexofFirstPost, indexofLastPost);
+const menucount = props.restaurantStore.Menu.length;
 const paginate = (pageNumber) => setCurrentPage(pageNumber);
 	const pageNumbers = [];
 
 	for (let i = 1; i <= Math.ceil(menucount / postsPerPage); i++) {
 		pageNumbers.push(i);
 	}
-
 	
-	// function onPageClick(pageno) {
-	// 	const page = pageno - 1;
-	// //	fetchMenu(page);
-	// }
+	
 	useEffect(() => {
 		var newMenu = [];
     const data = localStorage.getItem("restaurantId");
-    //fetchMenu();
-		//setMenu(JSON.parse(localStorage.getItem('RestaurantMenu')));
-		// axios.defaults.withCredentials = true;
-		// axios.get("http://localhost:3001/get/menu", {
-		// 	params : {
-		// 		restaurantId : data
-		// 	}
-		// }).then((response) => {
-		// 	//update the state with the response data
-		// 	for (var i = 0; i < response.data.length; i++) {
-		// 		var temp = response.data[i];
-		// 		newMenu.push({
-		// 			id: i,
-		// 			items: temp
-		// 		});
-		// 	}
-		// 	setState({
-		// 		menu: newMenu
-		// 	});
-
-		//});
+   
 	}, []);
 
 	const classes = useStyles();
@@ -152,22 +107,22 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
 	//     //setState({ ...state, [event.target.name]: event.target.checked });
 	// };
  
-	console.log("Menulist", Menulist);
+	//console.log("Menulist", Menulist);
 	function handleOrder() {
 		var orderItem = "";
 		var id = "";
 		var delieveryoption = "";
-		console.log("state", restaurantMenu.dishname);
+		console.log("state", props.restaurantStore.Menu.dishname);
 		setmsg(<p>Order Placed</p>);
 		for (var i = 0; i < newChecked.length; i++) {
-			   for(var j=0; i< restaurantMenu.length; j++) {
-           if (newChecked[i] === restaurantMenu[j]) {
-             orderItem = orderItem + restaurantMenu[j].dishname;
+			   for(var j=0; i< props.restaurantStore.Menu.length; j++) {
+           if (newChecked[i] === props.restaurantStore.Menu[j]) {
+             orderItem = orderItem + props.restaurantStore.Menu[j].dishname;
            }
 			console.log(newChecked.length);
 			id = newChecked[i];
 			console.log("id", id);
-			orderItem = orderItem + state.menu[id].items.dishName + ",";
+			orderItem = orderItem + props.restaurantStore.Menu[id].dishname + ",";
 		}
 		}
 		console.log("orderItem", orderItem);
@@ -325,13 +280,13 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
 }
 
 const mapStateToProps = (state) => {
-	console.log(state);
-	const restaurantData = state.restaurant;
-	const menuData = state.menu;
+	console.log(state);	
+	const {restaurantStore} = state.restaurant;	
 	return {
-		restaurantData,
+		restaurantStore		
 	};
-};
+}
+
 
 // const mapDispatchToProps = (dispatch) => {
 // 	return {

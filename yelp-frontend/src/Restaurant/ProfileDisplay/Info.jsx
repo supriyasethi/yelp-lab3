@@ -43,9 +43,9 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Info(restaurantData) {
-	let restaurant = restaurantData.restaurantData.restaurant;
-	console.log(restaurant);
+function Info(props) {
+	//let restaurant = restaurantData.restaurantData.restaurant;
+	//console.log(restaurant);
 	
 	let history = useHistory();
 	let [name, setname] = useState("");
@@ -55,10 +55,10 @@ function Info(restaurantData) {
 	let [picutre, setpicture] = useState(null);
 
 	useEffect(() => {
-		setname(restaurant.name);
-		setaddress(restaurant.address + "," + restaurant.city);
-		settiming(restaurant.timing);
-		setdescription(restaurant.description);
+		setname(props.restaurantStore.name);
+		setaddress(props.restaurantStore.city + "," + props.restaurantStore.state);
+		settiming(props.restaurantStore.timing);
+		setdescription(props.restaurantStore.description);
         // const data = localStorage.getItem('restaurantId');
 		// axios.defaults.withCredentials = true;
 		// axios.get("http://localhost:3001/get/bizp",
@@ -109,13 +109,13 @@ function Info(restaurantData) {
 						/>
 						<CardContent>
 							<Typography gutterBottom variant='h5' component='h2'>
-								{name}
+								{props.restaurantStore.name}
 							</Typography>
 							<Typography variant='body2' color='textSecondary' component='p'>
-								{address}
+								{props.restaurantStore.city}, {props.restaurantStore.state}
 							</Typography>
               <Typography variant='body2' color='textSecondary' component='p'>
-								Timing: {timing}
+								Timing: {props.restaurantStore.timing}
 							</Typography>
 						</CardContent>
 					</CardActionArea>					
@@ -128,21 +128,21 @@ function Info(restaurantData) {
 	);
 }
 
-const mapStateToProps = (state) => {
-	console.log(state);
-	const restaurantData = state.restaurant;
-	const menuData = state.menu;
-	return {
-		restaurantData,
-	};
-};
 // const mapStateToProps = (state) => {
-//     return {
-//         firstname: state.profile.firstname,
-//         zipcode :  state.profile.zipcode
-//     }
-//   }
+// 	console.log(state);
+// 	const restaurantData = state.restaurant;
+// 	const menuData = state.menu;
+// 	return {
+// 		restaurantData,
+// 	};
+// };
+const mapStateToProps = (state) => {
+	console.log(state);	
+	const {restaurantStore} = state.restaurant;	
+	return {
+		restaurantStore		
+	};
+}
 
-//export default connect(mapStateToProps, null)(UserInfo);
-//export default Info;
+
 export default connect(mapStateToProps, null)(Info);

@@ -25,7 +25,7 @@ function ProfileU(){
     const dispatch = useDispatch();
    const classes = useStyles(); 
    if(!localStorage.getItem('token')){
-	history.push('/home');
+	history.push('/login');
     }
 
     useEffect(() => {

@@ -11,7 +11,7 @@ async function fetchHomeBiz(msg, res) {
 	// 	case "fetch_home": {
 	let message = msg.query;
 	console.log("Inside Home Get request");
-	console.log("req query", msg);
+	console.log("req query", msg.query);
 	const keyword = message.keyword;
 	const location = message.location;
 	//const { keyword, location } = url.parse(req.url, true).query;
