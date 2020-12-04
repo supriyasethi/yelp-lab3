@@ -2,11 +2,15 @@
 "use strict";
 var express = require('express');
 var app = express();
+const {graphqlHTTP} = require('express-graphql');
+const { buildSchema} = require('graphql');
 var bodyParser = require('body-parser');
 const multer = require('multer');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var cors = require('cors');
+
+const events = [];
 //var redis = require('redis');
 //var connectRedis = require('connect-redis');
 var auth = require('./middleware/auth');
@@ -15,6 +19,60 @@ const {mongoDB, frontendURL, secret} = require('./utils/config');
 const mongoose = require('mongoose');
 
 app.use(fileupload());
+
+app.use("/graphql",graphqlHTTP({
+  schema: buildSchema(`
+    type Event {
+      _id: ID!
+      name: String!
+      description: String!
+      time: String!
+      date: String!
+      location: String!
+      restaurantId: String!      
+    }
+
+    input EventInput {
+      name: String!
+      description: String!
+      time: String!
+      date: String!
+      location: String!
+      restaurantId: String!
+    }
+
+    type  RootQuery {
+      events: [Event!]!
+    }
+
+    type RootMutation {
+      createEvent(eventInput: EventInput): Event
+    }
+
+    schema {
+      query: RootQuery
+      mutation: RootMutation
+    }`),
+  rootValue: {
+    events: () => {
+      return events;
+    },
+    createEvent: args => {
+      const event  = {
+        _id: Math.random().toString(),
+        name: args.eventInput.name,
+        description: args.eventInput.description,
+        time: args.eventInput.time,
+        date: args.eventInput.date,
+        location: args.eventInput.location,
+        restaurantId: args.eventInput.restaurantId
+      };
+      events.push(event);
+      return event;
+    }
+  },
+  graphiql: true
+}))
 
 //if you run behind a proxy (eg nginx)
 //app.set("trust proxy", 1);
@@ -52,6 +110,8 @@ app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(require('connect').bodyParser());
+
+
 
 //Allow Access Control
 app.use(function(req, res, next) {
@@ -95,6 +155,8 @@ const Fetch = require("./routes/Fetch");
 app.use("/update", Update);
 app.use("/insert", Insert);
 app.use("/get", Fetch);  
+
+
 
 // SET STORAGE
 var storage = multer.diskStorage({

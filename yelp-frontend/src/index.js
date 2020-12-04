@@ -7,11 +7,18 @@ import * as serviceWorker from './serviceWorker';
 import 'bulma/css/bulma.css';
 import { Provider } from "react-redux";
 import store from "./js/store/index";
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
 
+const client = new ApolloClient({
+  uri: 'http://localhost:3001/graphql'
+});
 
 ReactDOM.render(
   <React.StrictMode>
+     <ApolloProvider client={client}>
     <Provider store={store}><BrowserRouter><App /></BrowserRouter></Provider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -130,7 +130,7 @@ async function updateOrders(msg, res) {
 		// response.status = 500;
 		// response.data = error;
 		// return callback(null, error);
-		return res.status(500).json(err);
+		return res.status(500).json(error);
 	}
 	//break;
 }

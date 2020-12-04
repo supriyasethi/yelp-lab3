@@ -25,7 +25,6 @@ import LoginRestaurant from './Restaurant/LoginPage/LoginRestaurant';
 import Signup from './Restaurant/Signup/Signup';
 import SignupPage from './User/SignupPage/SignupPage.js';
 
-
 function App() {
    return (
      <Switch>
