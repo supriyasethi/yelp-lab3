@@ -3,15 +3,15 @@ const Users = require("../../yelp-backend/models/User");
 const Restaurants = require("../../yelp-backend/models/Restaurant");
 
 //async function handle_request(msg, callback) {
-function updateUser(msg, res) {
+async function updateUser(msg, res) {
 	let response = {};
 	// switch (msg.api) {
 	// 	case "update_userprofile": {
 	console.log("Inside Update User Profile Post Request");
 	console.log("Req Body : ", msg);
-	let message = msg.body;
+	let message = msg.updateUserInput;
 	try {
-		Users.findOneAndUpdate(
+		const user = await Users.findOneAndUpdate(
 			{ _id: message.userid },
 			{
 				$set: {
@@ -35,22 +35,25 @@ function updateUser(msg, res) {
 					// response.status = 500;
 					// response.data = "Network Error";
 					// callback(null, response);
-					res.json(500).send(error);
+					//res.json(500).send(error);
 				} else {
 					console.log("data", data);
 					// response.status = 200;
 					// response.data = data;
 					// callback(null, response);
-					res.status(200).json(data);
+					//res.status(200).json(data);
 				}
 			}
 		);
+		console.log(user);
+		return user;
 	} catch (error) {
 		console.log("error", error);
 		// response.status = 500;
 		// response.data = error;
 		// callback(null, response);
-		res.send(error);
+		//res.send(error);
+		return error;
 	}
 	//break;
 }

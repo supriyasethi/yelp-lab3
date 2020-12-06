@@ -44,6 +44,8 @@ module.exports = buildSchema(`
 		review: [Review]
 	}
 
+	
+
 	type MenuOutput {
 		name: String
 		restauarantId: ID
@@ -63,26 +65,8 @@ module.exports = buildSchema(`
 		price: String,
 		description: String,
 		category: String,
-	}
-
-	input ReviewInput {
-		resid: String
-		userid: String
-		username: String
-		review: String
-		rating: String
-	}
-
-	input OrderInput {
-		restaurantid: String
-		restaurantname: String
-		userid: String 
-		username: String
-		orderitem: String
-		delieveryoption: String
-		delieverystatus: String
-		orderstatus: String
-	}
+	}	
+	
 
 	input UpdateBizInput {
 		restaurantId: String
@@ -94,8 +78,12 @@ module.exports = buildSchema(`
 		emailid: String
 		website: String
 		phonenumber: String
-	}
+	}	
 
+	type insertOutput {
+		statuscode: String
+	}
+	
 	input UpdateOrderInput {
 		resid: String
 		orderid: String
@@ -103,19 +91,13 @@ module.exports = buildSchema(`
 		deliverystatus: String
 		orderfilter: String
 	}
-
-	type insertOutput {
-		statuscode: String
-	}
 	type updateOutput {
 		statuscode: String
 	}
 	type RootMutation {
-		insertMenu(menuInput: MenuInput): insertOutput
-		insertReview(reviewInput: ReviewInput): insertOutput
-		insertOrder(orderInput: OrderInput): insertOutput
-		updateBiz(updateBizInput: UpdateBizInput): Restaurant
-		updateOrders(updateOrderInput: UpdateOrderInput): updateOutput
+		insertMenu(menuInput: MenuInput): insertOutput		
+		updateBiz(updateBizInput: UpdateBizInput): Restaurant	
+		updateOrders(updateOrderInput: UpdateOrderInput): updateOutput	
 	}
 
 	schema {

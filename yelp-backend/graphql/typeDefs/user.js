@@ -1,58 +1,99 @@
-const graphql = require("graphql");
+const { buildSchema } = require("graphql");
 
-const {
-	GraphQLObjectType,
-	GraphQLString,
-	GraphQLSchema,
-	GraphQLID,
-	GraphQLInt,
-	GraphQLList,
-	GraphQLNonNull,
-} = graphql;
+module.exports = buildSchema(`
+	type Order {
+		_id: ID
+		restaurantid: String 
+		restaurantname: String
+		orderitem: String
+		delieveryoption: String
+		delieverystatus: String
+		orderstatus: String
+	}
 
-const Order = new GraphQLObjectType({
-	name: "Order",
-	fields: () => ({
-		id: { type: GraphQLID },
-		restaurantid: { type: GraphQLString },
-		restaurantname: { type: GraphQLString },
-		orderitem: { type: GraphQLString },
-		delieveryoption: { type: GraphQLString },
-		delieverystatus: { type: GraphQLString },
-		orderstatus: { type: GraphQLString },
-	}),
-});
+	type Review {
+		_id: ID
+		restaurantid: String		
+		review: String
+		rating: String
+	}
 
-const Review = new GraphQLObjectType({
-	name: "Review",
-	fields: () => ({
-		id: { type: GraphQLID },
-		restaurantid: { type: GraphQLString },	
-		review: { type: GraphQLString },
-		rating: { type: GraphQLString },
-	}),
-});
+	type User {
+		userid: ID!
+		firstname: String
+		lastname: String
+		dateofbirth: String
+		city: String
+		state: String
+		country: String
+		nickname: String
+		gender: String
+		emailid: String
+		phonenumber: String
+		yelpingsince: String
+		thingsilove: String
+		findmein: String
+		order: [Order]
+		review: [Review]
+	}
 
-const User = new GraphQLObjectType({
-	name: "User",
-	fields: () => ({
-		id: { type: GraphQLID },
-		firstname: { type: GraphQLString },
-		lastname: { type: GraphQLString },
-		dateofbirth: { type: GraphQLString },
-		city: { type: GraphQLString },
-		state: { type: GraphQLString },
-		country: { type: GraphQLString },
-		nickname: { type: GraphQLString },
-		gender: { type: GraphQLString },
-		emailid: { type: GraphQLString },
-		phonenumber: { type: GraphQLString },
-		yelpingsince: { type: GraphQLString },
-		thingsilove: { type: GraphQLString },
-		findmein: { type: GraphQLString },
-		order: { type: new GraphQLList(Order) },
-		review: { type: new GraphQLList(Review) },
-	}),
-});
+	type UserListOutput {
+		user: [User]
+				
+	}
+	
+	type  RootQuery {
+		fetchUsersList(SearchKey: String, PageNo: Int ):UserListOutput!
+		fetchUser(userId:String): User!
+	}
 
-module.exports.User = { User };
+	input UpdateUserInput {
+		userid: String
+		firstname: String
+		lastname: String
+		dateofbirth: String
+		state: String
+		country: String
+		nickname: String
+		gender: String
+		phonenumber: String
+		yelpingsince: String
+		thingsilove: String
+		findmein: String		
+	}
+
+	input ReviewInput {
+		resid: String
+		userid: String
+		username: String
+		review: String
+		rating: String
+	}
+	
+	input OrderInput {
+		restaurantid: String
+		restaurantname: String
+		userid: String 
+		username: String
+		orderitem: String
+		delieveryoption: String
+		delieverystatus: String
+		orderstatus: String
+	}
+
+	type insertOutput {
+		statuscode: String
+	}
+	
+
+	type RootMutation {			
+		updateUser(updateUserInput: UpdateUserInput): User
+		insertReview(reviewInput: ReviewInput): insertOutput
+		insertOrder(orderInput: OrderInput): insertOutput			
+	}
+
+	schema {
+		query: RootQuery
+		mutation: RootMutation
+	}
+`)

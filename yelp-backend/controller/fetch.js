@@ -77,7 +77,7 @@ async function fetchHomeBiz(msg, res) {
 // 			let message = msg.data;
 async function fetchUser(msg, res) {
 	console.log("Inside User Profile Get request");
-	let message = msg.query;
+	let message = msg;
 	try {
 		const user = await Users.findOne(
 			{ _id: message.userId },
@@ -87,22 +87,24 @@ async function fetchUser(msg, res) {
 					// response.status = 500;
 					// response.data = "Network Error";
 					// callback(null, response);
-					res.json(500).send(error);
+					//res.json(500).send(error);
 				} else {
 					console.log("data", data);
 					// response.status = 200;
 					// response.data = data;
 					// callback(null, response);
-					res.status(200).json(data);
+					//res.status(200).json(data);
 				}
 			}
 		);
+		return user;
 	} catch (error) {
 		console.log("error", error);
 		// response.status = 500;
 		// response.data = error;
 		// callback(null, response);
-		res.status(500).send(error);
+		//res.status(500).send(error);
+		return error;
 	}
 	//break;
 }
@@ -111,13 +113,15 @@ async function fetchUser(msg, res) {
 // 	let message = msg.data;
 async function fetchUsersList(msg, res) {
 	console.log("Inside User List Search Get request");
-	let message = msg.query;
+	console.log('msg',msg);
+	let message = msg;
 	const SearchKey = message.SearchKey;
 	const PageNo = message.PageNo;
 	//const { SearchKey, PageNo } = url.parse(req.url, true).query;
 	console.log(PageNo);
 	let resultData = [];
 	const userResult = [];
+	try {
 	if (SearchKey.length === 0) {
 		const userResults = await Users.find()
 			.limit(5)
@@ -151,10 +155,11 @@ async function fetchUsersList(msg, res) {
 		// response.status = 200;
 		// response.data = JSON.stringify(resultData);
 		// callback(null, response);
-		res.writeHead(200, {
-			"Content-Type": "application/json",
-		});
-		res.end(JSON.stringify(resultData));
+		// res.writeHead(200, {
+		// 	"Content-Type": "application/json",
+		// });
+		// res.end(JSON.stringify(resultData));
+		//  return resultData;
 	} else if (SearchKey.length !== 0) {
 		const userResults = await Users.find({
 			firstname: { $regex: `${SearchKey}`, $options: "i" },
@@ -186,17 +191,26 @@ async function fetchUsersList(msg, res) {
 			// eslint-disable-next-line no-await-in-loop
 			userResult.push(tempObj);
 		}
-		resultData = [userResult, count, noOfPages];
-		console.log("data", resultData);
+		resultData = [userResult];
+		//resultData = [userResult, count, noOfPages];
+		//console.log("data", resultData);
 		// response.status = 200;
 		// response.data = JSON.stringify(resultData);
 		// callback(null, response);
-		res.writeHead(200, {
-			"Content-Type": "application/json",
-		 });
-		console.log("result data", resultData);
-		res.end(JSON.stringify(resultData));
+		// res.writeHead(200, {
+		// 	"Content-Type": "application/json",
+		//  });
+		//console.log("result data", resultData);
+		//return resultData;
+		//res.end(JSON.stringify(resultData));
 	}
+	console.log(resultData);
+	return resultData;
+}
+catch (error) {
+	console.log("error", error);	
+	return error;
+}
 	//break;
 }
 

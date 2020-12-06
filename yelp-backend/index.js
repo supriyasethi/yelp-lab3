@@ -10,7 +10,8 @@ var session = require("express-session");
 var cookieParser = require("cookie-parser");
 var cors = require("cors");
 const restaurantSchema = require('./graphql/typeDefs/restaurant');
-const restaurantResolver = require('./controller/fetch');
+const userSchema = require('./graphql/typeDefs/user');
+const fetchResolver = require('./controller/fetch');
 const insertResolver = require('./controller/insert');
 const updateResolver = require('./controller/update');
 
@@ -26,8 +27,8 @@ app.use(fileupload());
 app.use(
 	"/graphql",
 	graphqlHTTP({
-    schema: restaurantSchema,
-    rootValue: updateResolver,
+    schema: userSchema,
+    rootValue: fetchResolver,
     graphiql: true,
 	})
 );
