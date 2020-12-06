@@ -9,9 +9,9 @@ async function fetchHomeBiz(msg, res) {
 	let response = {};
 	// switch (msg.api) {
 	// 	case "fetch_home": {
-	let message = msg.query;
+	let message = msg;
 	console.log("Inside Home Get request");
-	console.log("req query", msg.query);
+	console.log("req query", msg);
 	const keyword = message.keyword;
 	const location = message.location;
 	//const { keyword, location } = url.parse(req.url, true).query;
@@ -28,40 +28,47 @@ async function fetchHomeBiz(msg, res) {
 					// response.status = 500;
 					// response.data = "Network Error";
 					// callback(null, response);
-					res.json(500).send(error);
+					//res.json(500).send(error);
+					return error;
 				} else {
 					const tempObj = {};
 					for (var i = 0; i < data.length; i++) {
 						issearch = 1;
 						tempObj.name = data[i].name;
 						tempObj.restauarantid = data[i]._id;
+						
 						for (var j = 0; j < data[i].menu.length; j++) {
 							console.log("inside j loop");
-							if (
-								data[i].menu[j].dishname.toLowerCase() === keyword.toLowerCase()
-							) {
+							// if (
+							// 	data[i].menu[j].dishname.toLowerCase() === keyword.toLowerCase()
+							// ) {
 								console.log("inside if condition");
 								console.log(data[i].menu[j].dishname);
 								tempObj.dishname = data[i].menu[j].dishname;
 								tempObj.price = data[i].menu[j].price;
-							}
+							//}
+							
 						}
 						menuData.push(tempObj);
+						console.log("data", menuData);
 					}
-					console.log("data", data);
+					
 					// response.status = 200;
 					// response.data = menuData;
 					// callback(null, response);
-					res.status(200).json(menuData);
+					//res.status(200).json(menuData);
 				}
 			}
 		);
+		console.log(user);
+		return menuData;
 	} catch (error) {
 		console.log("error", error);
 		// response.status = 500;
 		// response.data = error;
 		// callback(null, response);
-		res.status(500).send(error);
+		//res.status(500).send(error);
+		return error;
 	}
 	//			break;
 }
@@ -243,8 +250,8 @@ async function fetchUsersList(msg, res) {
 // 	let message = msg.data;
 async function fetchBiz(msg, res) {
 	console.log("Inside Restaurant fetch request");
-	console.log(msg.query);
-	let message = msg.query;
+	console.log(msg);
+	let message = msg;
 	try {
 		const user = await Restaurants.findOne(
 			{ _id: message.restaurantId },
@@ -254,22 +261,26 @@ async function fetchBiz(msg, res) {
 					// response.status = 500;
 					// response.data = "Network Error";
 					// callback(null, response);
+					return error;
 					res.json(500).send(error);
 				} else {
 					console.log("data", data);
 					// response.status = 200;
 					// response.data = data;
 					// callback(null, response);
-					res.status(200).json(data);
+					//res.status(200).json(data);
+					//return data;
 				}
 			}
-		);
+		);		
+		return user;
 	} catch (error) {
 		console.log("error", error);
 		// response.status = 500;
 		// response.data = error;
 		// callback(null, response);
-		res.status(500).send(error);
+		//res.status(500).send(error);
+		return error;
 	}
 	//break;
 }

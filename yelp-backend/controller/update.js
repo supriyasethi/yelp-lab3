@@ -55,13 +55,13 @@ function updateUser(msg, res) {
 	//break;
 }
 
-function updateBiz(msg, res) {
+async function updateBiz(msg, res) {
 	//case "update_bizprofile": {
 	console.log("Inside Update Restaurant Profile Post Request");
 	console.log("Req Body : ", msg);
-	let message = msg.body;
+	let message = msg.updateBizInput;
 	try {
-		Restaurants.findOneAndUpdate(
+		const restaurant = await Restaurants.findOneAndUpdate(
 			{ _id: message.restaurantId },
 			{
 				$set: {
@@ -80,31 +80,35 @@ function updateBiz(msg, res) {
 					// response.status = 500;
 					// response.data = error;
 					// callback(null, response);
-					res.json(500).send(error);
+					//res.json(500).send(error);
 				} else {
 					console.log("data", data);
 					// response.status = 200;
 					// response.data = data;
 					// callback(null, response);
-					res.status(200).json(data);
+					//res.status(200).json(data);
 				}
 			}
 		);
+		console.log(restaurant);
+		return restaurant;
 	} catch (error) {
 		console.log("error", error);
 		// response.status = 500;
 		// response.data = error;
 		// callback(null, response);
-		res.send(error);
+		return error;
+		//res.send(error);
 	}
 	//break;
 }
 
 //case "update_orders": {
 async function updateOrders(msg, res) {
+	let updateOutput = {};
 	console.log("Inside Update Order Profile Post Request");
 	console.log("Req Body : ", msg);
-	let message = msg.body;
+	let message = msg.updateOrderInput;
 	var query1 = { _id: message.resid, "orders._id": message.orderid };
 	var query2 = {
 		_id: message.userid,
@@ -125,12 +129,17 @@ async function updateOrders(msg, res) {
 		// response.status = 200;
 		// response.data = { restaurantPromise, userPromise };
 		// return callback(null, response);
-		return res.status(200).json({ restaurantPromise, userPromise });
+		updateOutput.statuscode = "200";		
+		return updateOutput;
+		//return res.status(200).json({ restaurantPromise, userPromise });
 	} catch (error) {
 		// response.status = 500;
 		// response.data = error;
 		// return callback(null, error);
-		return res.status(500).json(error);
+		console.log(error);
+		updateOutput.statuscode = "500";		
+		return updateOutput;
+		//return res.status(500).json(error);
 	}
 	//break;
 }

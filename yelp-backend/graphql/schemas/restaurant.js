@@ -1,4 +1,5 @@
 const graphql = require('graphql');
+const Restaurant = require('../typeDefs/restaurant');
 
 const {
     GraphQLObjectType,
@@ -11,78 +12,6 @@ const {
 } = graphql;
 
 
-
-const RestaurantType = new GraphQLObjectType({
-    name: 'Restaurant',
-    fields: () => ({  
-        id: { type: GraphQLID },
-        name: { type: GraphQLString },
-		city: { type: GraphQLString },
-		description: { type: GraphQLString },
-		address: { type: GraphQLString },
-		timing: { type: GraphQLString},
-        menu: { type: GraphQLList },
-        orders: { type: GraphQLList },
-        reviews: { type: GraphQLList },        
-        })
-    });
-
-
-const UserType = new GraphQLObjectType({
-    name: 'User',
-    fields: () => ({
-        id: { type: GraphQLID },
-        firstname: { type: GraphQLString},
-        lastname: { type: GraphQLString },
-        city: { type: GraphQLString },
-		state: { type: GraphQLString },
-        country: { type: GraphQLString },
-        yelpingsince: { type: GraphQLString },
-		thingsilove: { type: GraphQLString },
-        findmein: { type: GraphQLString },
-        orders: { type: GraphQLList },
-        reviews: { type: GraphQLList }, 
-        name: { type: GraphQLString },     
-    })
-});
-
-const EventType = new GraphQLObjectType({
-    name: 'Event',
-    fields: () => ({
-        id: { type: GraphQLID },
-        name: { type: GraphQLString},        
-        time: { type: GraphQLString},
-		date: { type: GraphQLString},
-        location: { type: GraphQLString},         
-    })
-});
-
-const UserFollowType = new GraphQLObjectType({
-    name: 'UserFollow',
-    fields: () => ({
-        id: { type: GraphQLID },
-        userid: { type: GraphQLString },
-		firstname: { type: GraphQLString},
-		lastname: { type: GraphQLString },
-		city: { type: GraphQLString },
-		state: { type: GraphQLString },
-		yelpingsince: { type: GraphQLString },
-		thingsilove: { type: GraphQLString },
-		findmein: { type: GraphQLString },       
-    })
-});
-
-const MessagesType = new GraphQLObjectType({     
-    name: 'MessagesFollow',
-    fields: () => ({
-        id: { type: GraphQLID },
-        user: { type: GraphQLString },
-		userid: { type: GraphQLString },
-		restaurant: { type: GraphQLString },
-		restaurantid: { type: GraphQLString},
-		date: { type: GraphQLString },      
-    })
-});
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     description: 'Root Query',

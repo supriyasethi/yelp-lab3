@@ -150,7 +150,8 @@ async function userFollow(msg, res) {
 
 async function insertMenu(msg, res) {
 	// case "insert_menu": {
-	let message = msg.body;
+	let insertOutput = {};
+	let message = msg.menuInput;
 	console.log("Inside Insert Menu Post Request");
 	console.log("Req Body : ", message);
 	console.log("Req Query : ", msg);
@@ -164,7 +165,7 @@ async function insertMenu(msg, res) {
 	};
 	console.log(insertmenu);
 	try {
-		await Restaurants.findOneAndUpdate(
+		const menu = await Restaurants.findOneAndUpdate(
 			{ _id: message.resId },
 			{ $addToSet: { menu: insertmenu } },
 			function (error, data) {
@@ -173,29 +174,39 @@ async function insertMenu(msg, res) {
 					// response.status = 500;
 					// response.data = "Network Error";
 					// callback(null, response);
-					res.json(500).send(error);
+					//res.json(500).send(error);
+					//messageReturned = "Network Error"
+					insertOutput.statuscode = "500";
 				} else {
-					console.log("data", data);
+					//.log("data", data);
 					// response.status = 200;
 					// response.data = data;
 					// callback(null, response);
-					res.status(200).json(data);
+					//res.status(200).json(data);	
+					//messageReturned = "Menu Inserted"
+					insertOutput.statuscode = "200";			
+					//return data.menu;
 				}
 			}
-		);
+		).select('menu');
+		return (insertOutput);
+		//return (menu.menu);
 	} catch (error) {
 		console.log("error", error);
 		// response.status = 500;
 		// response.data = error;
 		// callback(null, response);
-		res.send(error);
+		insertOutput.statuscode = "500";		
+		return insertOutput;		
+		//res.send(error);
 	}
 	//break;
 }
 
 async function insertReview(msg, res) {
 	// case "insert_review": {
-	let message = msg.body;
+	let insertOutput = {};
+	let message = msg.reviewInput;
 	console.log("Inside Insert Reviews Post Request");
 	console.log(message);
 	var insertreviewRestaurant = {
@@ -228,21 +239,26 @@ async function insertReview(msg, res) {
 		);
 		const userPromise = await Users.findOneAndUpdate(query2, update2, options);
 		// response.status = 200;
-		// response.data = { restaurantPromise, userPromise };
+		let response = { restaurantPromise, userPromise };
 		// return callback(null, response);
-		res.status(200).json({ restaurantPromise, userPromise });
+		insertOutput.statuscode = "200";		
+		return insertOutput;
+		//res.status(200).json({ restaurantPromise, userPromise });
 	} catch (error) {
 		// response.status = 500;
 		// response.data = error;
 		// return callback(null, error);
-		res.status(500).json(err);
+		insertOutput.statuscode = "500";		
+		return insertOutput;
+		//res.status(500).json(err);
 	}
 	//break;
 }
 
 async function insertOrder(msg, res) {
 	// case "insert_order": {
-	let message = msg.body;
+	let insertOutput = {};
+	let message = msg.orderInput;
 	console.log("Inside Insert Order Post Request");
 	console.log(message);
 
@@ -256,7 +272,7 @@ async function insertOrder(msg, res) {
 	};
 
 	var insertorderUser = {
-		restaurantid: message.resid,
+		restaurantid: message.restaurantid,
 		restaurantname: message.restaurantname,
 		orderitem: message.orderitem,
 		delieveryoption: message.delieveryoption,
@@ -264,7 +280,7 @@ async function insertOrder(msg, res) {
 		orderstatus: message.orderstatus,
 	};
 	console.log(insertorderRestaurant);
-	var query1 = { _id: message.resid };
+	var query1 = { _id: message.restaurantid };
 	var query2 = { _id: message.userid };
 	var update1 = {
 		$addToSet: { orders: insertorderRestaurant },
@@ -283,12 +299,16 @@ async function insertOrder(msg, res) {
 		// response.status = 200;
 		// response.data = { restaurantPromise, userPromise };
 		// return callback(null, response);
-		return res.status(200).json({ restaurantPromise, userPromise });
+		insertOutput.statuscode = "200";		
+		return insertOutput;
+		//return res.status(200).json({ restaurantPromise, userPromise });
 	} catch (error) {
 		// response.status = 500;
 		// response.data = error;
 		// return callback(null, error);
-		return res.status(500).json(error);
+		insertOutput.statuscode = "500";		
+		return insertOutput;
+		//return res.status(500).json(error);
 	}
 	//break;
 }
