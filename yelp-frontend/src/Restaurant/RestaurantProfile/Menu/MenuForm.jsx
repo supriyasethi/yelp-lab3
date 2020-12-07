@@ -9,6 +9,8 @@ import { useHistory } from "react-router-dom";
 import { updateRestaurantProfile } from "../../../js/actionconstants/action-types";
 import { getProfile } from "../../../js/actions/restaurantActions";
 import serverUrl from "../../../config";
+import { gql } from "apollo-boost";
+import { useMutation } from "react-apollo-hooks";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -45,6 +47,30 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+const INSERT_MENU = gql`
+	mutation insertMenu(
+		$resId: String
+		$dishname: String
+		$ingredients: String
+		$price: String
+		$description: String
+		$category: String
+	) {
+		insertMenu(
+			menuInput: {
+				resId: $resId
+				dishname: $dishname
+				ingredients: $ingredients
+				price: $price
+				description: $description
+				category: $category
+			}
+		) {
+			statuscode
+		}
+	}
+`;
+
 function MenuForm() {
 	const dispatch = useDispatch();
 	const [picture, setpicture] = useState(
@@ -62,6 +88,8 @@ function MenuForm() {
 	let history = useHistory();
 	const classes = useStyles();
 	const resId = localStorage.getItem("restaurant_id");
+	const [createMenu, { error, data }] = useMutation(INSERT_MENU);
+
 	function handleChange(e) {
 		const value = e.target.value;
 		setState({
@@ -71,27 +99,56 @@ function MenuForm() {
 		});
 	}
 
-	function handleSaveChanges() {		
+	const handleSaveChanges = (e) => {
+		console.log("inside handle save changes");
+		createMenu({
+			variables: {
+				resId: state.resId,
+				dishname: state.dishname,
+				ingredients: state.ingredients,
+				price: state.price,
+				description: state.description,
+				category: state.category,
+			},
+		});
+		console.log(data);
+		if (data) {
+			let payload = {
+				Menu: {
+					dishname: state.dishname,
+					ingredients: state.ingredients,
+					price: state.price,
+					description: state.description,
+					category: state.category,
+				},
+			};
+			dispatch(getProfile(payload));
+//			e.preventDefault();
+			history.push("/bizp");
+		}
+		if (error) {
+			console.log("error", error.response);
+		}
 
-		axios.defaults.withCredentials = true;
-		axios
-			.post(serverUrl + "/insert/menu", state)
-			.then((response) => {
-				console.log("Status code: ", response.status);
-				if (response.status === 200) {
-					let payload = {
-						restaurant: {
-							Menu: response.data
-						}
-					}
-					dispatch(getProfile(payload));
-					history.push("/bizp");
-				}
-			})
-			.catch((error) => {
-				console.log("error", error.response);
-			});
-	}
+		// axios.defaults.withCredentials = true;
+		// axios
+		// 	.post(serverUrl + "/insert/menu", state)
+		// 	.then((response) => {
+		// 		console.log("Status code: ", response.status);
+		// 		if (response.status === 200) {
+		// 			let payload = {
+		// 				restaurant: {
+		// 					Menu: response.data,
+		// 				},
+		// 			};
+		// 			dispatch(getProfile(payload));
+		// 			history.push("/bizp");
+		// 		}
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log("error", error.response);
+		// 	});
+	};
 
 	function handleCancel() {
 		history.push("/bizp");
@@ -256,7 +313,7 @@ function MenuForm() {
 							fontWeight: "bold",
 							background: "#d32323",
 						}}
-						onClick={handleSaveChanges}>
+						onClick={(event) => handleSaveChanges(event)}>
 						Save Changes
 					</Button>
 
@@ -295,7 +352,7 @@ const mapDispatchToProps = (dispatch) => {
 					payload,
 				})
 			);
-		},		
+		},
 	};
 };
 export default connect(null, mapDispatchToProps)(MenuForm);

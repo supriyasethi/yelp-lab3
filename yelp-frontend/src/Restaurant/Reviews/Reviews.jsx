@@ -82,7 +82,7 @@ function Reviews(props) {
 	// 			});
 	// 		});
 	// }, []);	
-
+	console.log('props',props.restaurantStore.Reviews);
 	function routetoCustomer(e, id) {
 		history.push({
 			pathname: "/userdisplay",
@@ -106,7 +106,7 @@ function Reviews(props) {
 			<div>
 				<Divider />
 			</div>
-			{props.restaurantStore.Reviews && (props.restaurantStore.Reviews) > 0 ? (
+			{props.restaurantStore.Reviews  ? (
 			<div className={classes.list}>
 				<List>
 					{/* {restaurantReviews.map((listitem) => ( */}

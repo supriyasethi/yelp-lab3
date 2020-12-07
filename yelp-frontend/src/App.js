@@ -27,6 +27,7 @@ import SignupPage from './User/SignupPage/SignupPage.js';
 
 function App() {
    return (
+     
      <Switch>
        <Route path="/login" component={LoginUser}/>
        <Route path="/loginbiz" component={LoginRestaurant}/>

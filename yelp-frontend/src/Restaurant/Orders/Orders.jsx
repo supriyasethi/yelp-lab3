@@ -151,7 +151,7 @@ function Orders(props) {
 			<div>
 				<Divider />
 			</div>
-			{props.restaurantStore.Orders && (props.restaurantStore.Orders > 0) ? (
+			{props.restaurantStore.Orders ? (
 			<div className={classes.list}>
 				<List>
 					{/* {restaurantOrders.map((listitem) => ( */}

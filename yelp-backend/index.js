@@ -9,11 +9,9 @@ const multer = require("multer");
 var session = require("express-session");
 var cookieParser = require("cookie-parser");
 var cors = require("cors");
-const restaurantSchema = require('./graphql/typeDefs/restaurant');
-const userSchema = require('./graphql/typeDefs/user');
-const fetchResolver = require('./controller/fetch');
-const insertResolver = require('./controller/insert');
-const updateResolver = require('./controller/update');
+const Schema = require('./graphql/schemas/schema');
+const Resolver = require('./graphql/resolvers/resolver');
+
 
 //var redis = require('redis');
 //var connectRedis = require('connect-redis');
@@ -23,62 +21,6 @@ const { mongoDB, frontendURL, secret } = require("./utils/config");
 const mongoose = require("mongoose");
 
 app.use(fileupload());
-
-app.use(
-	"/graphql",
-	graphqlHTTP({
-    schema: userSchema,
-    rootValue: fetchResolver,
-    graphiql: true,
-	})
-);
-		// rootValue: {
-    //   // events: async () => {
-    //   //   return (await Event.find({}).toArray()).map(prepare)
-    //   // },
-		// 	events: () => {
-		// 		return Event.find({})
-		// 			.then((events) => {            
-		// 				 return events.map((event) => {
-    //            return { ...event._doc };               
-		// 				 });
-		// 			})
-		// 			.catch((error) => {
-		// 				throw error;
-		// 			});
-		// 	},
-		// 	createEvent: (args) => {
-		// 		// const event  = {
-		// 		//   _id: Math.random().toString(),
-		// 		//   name: args.eventInput.name,
-		// 		//   description: args.eventInput.description,
-		// 		//   time: args.eventInput.time,
-		// 		//   date: args.eventInput.date,
-		// 		//   location: args.eventInput.location,
-		// 		//   restaurantId: args.eventInput.restaurantId
-		// 		// };
-		// 		const event = new Event({
-		// 			name: args.eventInput.name,
-		// 			description: args.eventInput.description,
-		// 			time: args.eventInput.time,
-		// 			date: args.eventInput.date,
-		// 			location: args.eventInput.location,
-		// 			hashtags: args.eventInput.hashtags,
-		// 			restaurantId: args.eventInput.restaurantId,
-		// 		});
-		// 		return event
-		// 			.save()
-		// 			.then((response) => {
-		// 				console.log(response);
-		// 				return { ...response._doc };
-		// 			})
-		// 			.catch((error) => {
-		// 				console.log(error);
-		// 				throw error;
-		// 			});
-		// 	},
-		// },
-		
 
 //if you run behind a proxy (eg nginx)
 //app.set("trust proxy", 1);
@@ -165,6 +107,16 @@ const Fetch = require("./routes/Fetch");
 app.use("/update", Update);
 app.use("/insert", Insert);
 app.use("/get", Fetch);
+
+app.use(
+	"/graphql",
+	graphqlHTTP({
+    schema: Schema,
+    rootValue: Resolver,
+    graphiql: true,
+	})
+);
+		
 
 // SET STORAGE
 var storage = multer.diskStorage({

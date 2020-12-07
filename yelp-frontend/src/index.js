@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import store from "./js/store/index";
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
 
 const client = new ApolloClient({
   uri: 'http://localhost:3001/graphql'
@@ -16,9 +17,13 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <React.StrictMode>
-     <ApolloProvider client={client}>
-    <Provider store={store}><BrowserRouter><App /></BrowserRouter></Provider>
+    <Provider store={store}><BrowserRouter>
+    <ApolloProvider client={client}>
+      <ApolloHooksProvider client={client}>
+    <App />
+    </ApolloHooksProvider>
     </ApolloProvider>
+    </BrowserRouter></Provider>    
   </React.StrictMode>,
   document.getElementById('root')
 );
