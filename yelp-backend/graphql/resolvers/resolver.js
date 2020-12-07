@@ -20,21 +20,32 @@ async function fetchHomeBiz(msg, res) {
 					console.log("error", error);					
 					return error;
 				} else {
-					const tempObj = {};
-					for (var i = 0; i < data.length; i++) {
-						issearch = 1;
-						tempObj.name = data[i].name;
-						tempObj.restauarantid = data[i]._id;
+					console.log('data', data);
+					
+					for (var i = 0; i < data.length; i++) {					
+						issearch = 1;					
 						
 						for (var j = 0; j < data[i].menu.length; j++) {
+							const tempObj = {};
+								console.log(data[i].menu[j].dishname.toLowerCase());
+								console.log(keyword.toLowerCase());
+							if (
+								data[i].menu[j].dishname.toLowerCase().includes(keyword.toLowerCase())
+							) {
 							console.log("inside j loop");							
 								console.log("inside if condition");
 								console.log(data[i].menu[j].dishname);
+								tempObj.name = data[i].name;
+								tempObj.restaurantid = data[i]._id;
 								tempObj.dishname = data[i].menu[j].dishname;
-								tempObj.price = data[i].menu[j].price;												
+								tempObj.price = data[i].menu[j].price;	
+								menuData.push(tempObj);									
+							}
+							
+							console.log("data", menuData);	
 						}
-						menuData.push(tempObj);
-						console.log("data", menuData);
+						
+						
 					}			
 					
 				}
@@ -134,11 +145,12 @@ async function fetchEvent(msg, res) {
 
 async function insertEvent(msg, res) {
 	let response = {};
+	let insertOutput = {};
 	console.log("Inside Insert Event Post Request");
 	console.log("Req Body : ", msg);
-	let message = msg.body;
+	let message = msg.eventInput;
 	const eventdata = new Events({
-		name: message.eventname,
+		name: message.name,
 		description: message.description,
 		time: message.time,
 		date: message.date,
@@ -148,18 +160,25 @@ async function insertEvent(msg, res) {
 	});
 
 	try {
-		await eventdata.save((error, data) => {
+		let event = await eventdata.save((error, data) => {
 			if (error) {
-				console.log("error", error);				
-				res.json(500).send(error);
+				console.log("error", error);
+				insertOutput.statuscode = "500";				
+				//res.json(500).send(error);
 			} else {
 				console.log("data", data);				
-				res.status(200).json(data);
+				insertOutput.statuscode = "200";
+				//res.status(200).json(data);
 			}
-		});
+		});    
+		//return insertOutput;
+		console.log('event',insertOutput);
+		return event;
 	} catch (error) {
-		console.log("error", error);		
-		res.send(error);
+		console.log("error", error);	
+		insertOutput.statuscode = "500";	
+		return insertOutput;
+		//res.send(error);
 	}
 	
 }
@@ -194,7 +213,9 @@ async function insertMenu(msg, res) {
 				}
 			}
 		).select('menu');
-		return (insertOutput);		
+		console.log(menu);
+		return menu;
+		//return (insertOutput);		
 	} catch (error) {
 		console.log("error", error);	
 		insertOutput.statuscode = "500";		
@@ -279,16 +300,18 @@ async function insertOrder(msg, res) {
 	var update2 = {
 		$addToSet: { orders: insertorderUser },
 	};
-	var options = { safe: true, upsert: true };
+	var options = { safe: true, upsert: true, new: true };
 	try {
 		const restaurantPromise = await Restaurants.findOneAndUpdate(
 			query1,
 			update1,
 			options
 		);
-		const userPromise = await Users.findOneAndUpdate(query2, update2, options);		
+		const userPromise = await Users.findOneAndUpdate(query2, update2, options);	
+		console.log(userPromise);
 		insertOutput.statuscode = "200";		
-		return insertOutput;
+		//return insertOutput;
+		return (restaurantPromise.orders);
 		//return res.status(200).json({ restaurantPromise, userPromise });
 	} catch (error) {		
 		insertOutput.statuscode = "500";		
@@ -379,12 +402,12 @@ async function updateOrders(msg, res) {
 	var query1 = { _id: message.resid, "orders._id": message.orderid };
 	var query2 = {
 		_id: message.userid,
-		"orders.restaurantid": message.resid,
+		"orders._id": message.orderid ,
 	};
 	var update = {
 		$set: {
 			"orders.$.delieverystatus": message.delieverystatus,
-			"orders.$.orderstatus": message.orderfilter,
+			"orders.$.orderstatus": message.orderstatus,
 		},
 	};
 	try {
@@ -393,8 +416,11 @@ async function updateOrders(msg, res) {
 			update
 		);
 		const userPromise = await Users.findOneAndUpdate(query2, update);
-		updateOutput.statuscode = "200";		
-		return updateOutput;		
+		console.log(restaurantPromise);
+		console.log(userPromise);
+		//updateOutput.statuscode = "200";		
+		//return updateOutput;		
+		return(restaurantPromise.orders);
 	} catch (error) {		
 		console.log(error);
 		updateOutput.statuscode = "500";		
