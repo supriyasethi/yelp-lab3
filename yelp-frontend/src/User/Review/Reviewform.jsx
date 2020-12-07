@@ -3,6 +3,7 @@ import {Button, TextField, Typography, Divider} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import serverUrl from '../../config';
 //import { setLogin } from "../js/actions/index";
 
 const useStyles = makeStyles( (theme) => ({
@@ -28,7 +29,7 @@ const useStyles = makeStyles( (theme) => ({
 const Reviewform = () => {
 
     //let httpURL = "http://localhost:3001";
-	let httpURL = "http://54.219.75.46:3001";
+	// let httpURL = "http://54.219.75.46:3001";
     let history = useHistory();    
     
      //const dispatch = useDispatch();
@@ -67,7 +68,7 @@ const Reviewform = () => {
                    
         console.log(state);
         axios.defaults.withCredentials = true;
-         axios.post(httpURL+"/insert/reviews", state)
+         axios.post(serverUrl+"/insert/reviews", state)
          .then(response => {
              console.log("Status code: ", response.status);
              if(response.status === 200) {

@@ -15,7 +15,7 @@ import { useQuery } from "react-apollo-hooks";
 const fetchProfile = gql`
 	query fetchUser($userId: String) {
 		fetchUser(userId: $userId) {
-			userid
+			_id
 			firstname
 			lastname
 			dateofbirth
@@ -29,7 +29,7 @@ const fetchProfile = gql`
 			yelpingsince
 			thingsilove
 			findmein
-			order {
+			orders {
 				_id
 				restaurantid
 				restaurantname
@@ -38,7 +38,7 @@ const fetchProfile = gql`
 				delieverystatus
 				orderstatus
 			}
-			review {
+			reviews {
 				_id
 				restaurantid
 				review

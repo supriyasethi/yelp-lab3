@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function UserDetails() {
+function UserDetails(props) {
 		
 	const classes = useStyles();
 	let history = useHistory();
@@ -82,34 +82,34 @@ export default function UserDetails() {
 	function handleClickMessages() {
 		history.push("/usermessages");
 	}
-	useEffect(() => {
-		const userId = localStorage.getItem("userId");
-		let firstname =	localStorage.getItem('user_firstname');
-		let lastname = localStorage.getItem('user_lastname');
-		let city = localStorage.getItem('user_city' );
-		let state  = localStorage.getItem('user_state');
-		setUsername(firstname + ' ' + lastname);
-		setlocation(city + ', ' +state);
-		setyelpingsince(localStorage.getItem('user_yelpingsince'));
-		setthingsilove(localStorage.getItem('user_thingsilove'));
-		// axios
-		// 	.get(serverUrl + "get/userp", {
-		// 		params: {
-		// 			userId: userId,
-		// 		},
-		// 	})
-		// 	.then((response) => {
-		// 		//    update the state with the response data
-		// 		console.log(response);
-		// 		setUsername(
-		// 			response.data[0].first_name + " " + response.data[0].last_name
-		// 		);
-		// 		setlocation(response.data[0].city + ", " + response.data[0].state);
-		// 		setyelpingsince(response.data[0].yelping_since);
-		// 		setthingsilove(response.data[0].things_i_love);
-		// 	});
-	}, []);
-
+	// useEffect(() => {
+	// 	const userId = localStorage.getItem("userId");
+	// 	let firstname =	localStorage.getItem('user_firstname');
+	// 	let lastname = localStorage.getItem('user_lastname');
+	// 	let city = localStorage.getItem('user_city' );
+	// 	let state  = localStorage.getItem('user_state');
+	// 	setUsername(firstname + ' ' + lastname);
+	// 	setlocation(city + ', ' +state);
+	// 	setyelpingsince(localStorage.getItem('user_yelpingsince'));
+	// 	setthingsilove(localStorage.getItem('user_thingsilove'));
+	// 	// axios
+	// 	// 	.get(serverUrl + "get/userp", {
+	// 	// 		params: {
+	// 	// 			userId: userId,
+	// 	// 		},
+	// 	// 	})
+	// 	// 	.then((response) => {
+	// 	// 		//    update the state with the response data
+	// 	// 		console.log(response);
+	// 	// 		setUsername(
+	// 	// 			response.data[0].first_name + " " + response.data[0].last_name
+	// 	// 		);
+	// 	// 		setlocation(response.data[0].city + ", " + response.data[0].state);
+	// 	// 		setyelpingsince(response.data[0].yelping_since);
+	// 	// 		setthingsilove(response.data[0].things_i_love);
+	// 	// 	});
+	// }, []);
+	console.log('userStore',props.userStore);
 	return (
 		<div className={classes.root}>
 			<div className={classes.itemlist}>
@@ -204,7 +204,7 @@ export default function UserDetails() {
 						fontWeight: "bold",
 						fontSize: "14px",
 					}}>
-					About {username}{" "}
+					About {props.userStore.Firstname} {props.userStore.Lastname}
 				</Typography>
 				<Typography
 					style={{
@@ -214,7 +214,7 @@ export default function UserDetails() {
 					}}>
 					Location{" "}
 				</Typography>
-				{location}
+				{props.userStore.City}, {props.userStore.Country}
 				<Typography
 					style={{
 						color: "primary",
@@ -223,7 +223,7 @@ export default function UserDetails() {
 					}}>
 					Yelping Since{" "}
 				</Typography>
-				{yelpingsince}
+				{props.userStore.Yelpingsince}
 				<Typography
 					style={{
 						color: "primary",
@@ -232,8 +232,17 @@ export default function UserDetails() {
 					}}>
 					Things I Love{" "}
 				</Typography>
-				{thingsilove}
+				{props.userStore.Thingsilove}
 			</div>
 		</div>
 	);
 }
+
+const mapStateToProps = (state) => {	
+	const {userStore} = state.userReducer;
+	return {
+		userStore,
+	};
+};
+
+export default connect(mapStateToProps, null)(UserDetails);

@@ -55,24 +55,24 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ProfileInfo(userData) {
+function ProfileInfo(props) {
 	const dispatch = useDispatch();
-	let userInfo = userData.userData;
+	//let userInfo = userData.userData;
 	const [selectedFile, setSelectedFile] = useState(null);
 	const [picname, setpicname] = useState("Your Profile Photo");
 	const [uploadedFile, setUploadedFile] = useState({});
 	const [state, setState] = React.useState({
-		firstname: userInfo.Firstname,
-		lastname: userInfo.Lastname,
-		nickname: userInfo.Nickname,
-		gender: userInfo.Gender,
-		phonenumber: userInfo.Phonenumber,
-		birthday: userInfo.Dateofbirth,
-		state: userInfo.State,
-		country: userInfo.Country,
-		thingsilove: userInfo.Thingsilove,
-		yelpingsince: userInfo.Yelpingsince,
-		findmein: userInfo.Findmein,
+		firstname: props.userStore.Firstname,
+		lastname: props.userStore.Lastname,
+		nickname: props.userStore.Nickname,
+		gender: props.userStore.Gender,
+		phonenumber: props.userStore.Phonenumber,
+		birthday: props.userStore.Dateofbirth,
+		state: props.userStore.State,
+		country: props.userStore.Country,
+		thingsilove: props.userStore.Thingsilove,
+		yelpingsince: props.userStore.Yelpingsince,
+		findmein: props.userStore.Findmein,
 		userid: null,
 	});
 
@@ -168,18 +168,19 @@ function ProfileInfo(userData) {
 			.then((response) => {
 				console.log("Status code: ", response.status);
 				if (response.status === 200) {
-					userInfo.Firstname = state.firstname;
-					userInfo.Lastname = state.lastname;
-					userInfo.Nickname = state.nickname;
-					userInfo.Gender = state.gender;
-					userInfo.Phonenumber = state.phonenumber;
-					userInfo.Dateofbirth = state.birthday;
-					userInfo.State = state.state;
-					userInfo.Country = state.country;
-					userInfo.Thingsilove = state.thingsilove;
-					userInfo.Yelpingsince = state.yelpingsince;
-					userInfo.Findmein = state.findmein;
-					let payload = userInfo;
+					let payload = {
+					Firstname : state.firstname,
+					Lastname : state.lastname,
+					Nickname : state.nickname,
+					Gender : state.gender,
+					Phonenumber : state.phonenumber,
+					Dteofbirth : state.birthday,
+					State : state.state,
+					Country : state.country,
+					Thingsilove : state.thingsilove,
+					Yelpingsince : state.yelpingsince,
+					Findmein : state.findmein 
+					}					
 					console.log("payload in rofileinfo", payload);
 					dispatch(getUserProfile(payload));
 					history.push("/userp");
@@ -513,12 +514,13 @@ function ProfileInfo(userData) {
 	);
 }
 
-const mapStateToProps = (state) => {
-	const userData = state.userReducer.user;
+const mapStateToProps = (state) => {	
+	const {userStore} = state.userReducer;
 	return {
-		userData,
+		userStore,
 	};
 };
+
 const mapDispatchToProps = (dispatch) => {
 	return {
 		getUserProfile: (payload) => {

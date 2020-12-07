@@ -8,6 +8,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import axios from "axios";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -43,10 +44,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ViewOrder() {
-
-	//let httpURL = "http://localhost:3001";
-	let httpURL = "http://54.219.75.46:3001";
+function ViewOrder(props) {
+	
 	let history = useHistory();
 	const [checked, setChecked] = React.useState([1]);
 	let [state, setState] = React.useState({
@@ -58,30 +57,30 @@ function ViewOrder() {
 	var newOrder = [];
 	const data = localStorage.getItem("userId");
 
-	useEffect(() => {
-		console.log("data", data);
-		axios.defaults.withCredentials = true;
-		axios
-			.get(httpURL+"/get/vieworder", {
-				params: {
-					userId: data,
-				},
-			})
-			.then((response) => {
-        console.log(response);
-				//update the state with the response data
-				for (var i = 0; i < response.data.length; i++) {
-					var temp = response.data[i];
-					newOrder.push({
-						id: i,
-						items: temp,
-					});
-				}
-				setState({
-					orders: newOrder,
-				});
-			});
-	}, []);
+	// useEffect(() => {
+	// 	console.log("data", data);
+	// 	axios.defaults.withCredentials = true;
+	// 	axios
+	// 		.get(httpURL+"/get/vieworder", {
+	// 			params: {
+	// 				userId: data,
+	// 			},
+	// 		})
+	// 		.then((response) => {
+    //     console.log(response);
+	// 			//update the state with the response data
+	// 			for (var i = 0; i < response.data.length; i++) {
+	// 				var temp = response.data[i];
+	// 				newOrder.push({
+	// 					id: i,
+	// 					items: temp,
+	// 				});
+	// 			}
+	// 			setState({
+	// 				orders: newOrder,
+	// 			});
+	// 		});
+	// }, []);
 
 	const classes = useStyles();
 	let [msg, setmsg] = useState("");	
@@ -114,7 +113,8 @@ function ViewOrder() {
 			</div>
 			<div className={classes.list}>
 				<List>
-					{state.orders.map((listitem) => (
+					{/* {state.orders.map((listitem) => ( */}
+					{props.userStore.Orders.map((listitem) => (
 						<ListItem alignItems='flex-start' key={listitem.id}>
 							<Divider />
 							<ListItemText
@@ -124,10 +124,10 @@ function ViewOrder() {
 									fontSize: "13px",
 									justifyContent: "center",
 								}}
-								primary={listitem.items.orderItem}
+								primary={listitem.orderitem}
 								secondary={
 									<React.Fragment>
-                    <div>											
+                   	 <div>											
 											<Typography
 													style={{
 														color: "#333333",
@@ -135,7 +135,7 @@ function ViewOrder() {
 														fontSize: "13px",
 														justifyContent: "center",
 													}}>
-													Order Status: {listitem.items.orderFilter}
+													Order Status: {listitem.orderstatus}
 												</Typography>									
 											</div>
 										<div>											
@@ -146,7 +146,7 @@ function ViewOrder() {
 														fontSize: "13px",
 														justifyContent: "center",
 													}}>
-													Delievery Status: {listitem.items.delieveryStatus}
+													Delievery Status: {listitem.delieverystatus}
 												</Typography>									
 											</div>
                       <Link
@@ -159,9 +159,9 @@ function ViewOrder() {
 													justifyContent: "center",
 												}}
 												onClick={(event) =>
-													routetoRestaurant(event, listitem.items.name)
+													routetoRestaurant(event, listitem.restaurantname)
 												}>											
-												{listitem.items.name}											
+												{listitem.restaurantname}											
 											</Link>												
 									</React.Fragment>
 								}
@@ -175,12 +175,12 @@ function ViewOrder() {
 	);
 }
 
-// const mapStateToProps = (state) => {
-//     return {
-//         firstname: state.profile.firstname,
-//         zipcode :  state.profile.zipcode
-//     }
-//   }
+const mapStateToProps = (state) => {	
+	const {userStore} = state.userReducer;
+	return {
+		userStore,
+	};
+};
 
-//export default connect(mapStateToProps, null)(UserInfo);
-export default ViewOrder;
+export default connect(mapStateToProps, null)(ViewOrder);
+//export default ViewOrder;

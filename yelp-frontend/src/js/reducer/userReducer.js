@@ -1,7 +1,7 @@
 const { updateUserProfile } = require("../actionconstants/action-types");
 
 const defaultState = {
-	user: {
+	userStore: {
 		Firstname: "",
 		Lastname: "",
 		Dateofbirth: "",
@@ -27,7 +27,7 @@ const userReducer = (state = defaultState, action) => {
 		case updateUserProfile: {
 			return {
 				...state,
-				user: { ...state.user, ...action.payload },
+				userStore: { ...state.userStore, ...action.payload },
 				//   return Object.assign(state, action.payload);
 			};
 		}

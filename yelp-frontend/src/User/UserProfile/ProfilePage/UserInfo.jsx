@@ -37,12 +37,12 @@ const useStyles = makeStyles(() => ({
 	},
 }));
 
-function UserInfo(userData) {
+function UserInfo(props) {
 
 	let [profilepic, setProfilePic] = useState('');
 	let history = useHistory();
 
-	let userInfo = userData.userData;
+	//let userInfo = userData.userData;
 
 	const classes = useStyles();
 
@@ -70,14 +70,14 @@ function UserInfo(userData) {
 						fontWeight: "bold",
 						fontSize: "29px",
 					}}>
-					{userInfo.Firstname} {userInfo.Lastname}
+					{props.userStore.Firstname} {props.userStore.Lastname}
 				</Typography>
 				<Typography
 					style={{
 						color: "#333333",
 						fontSize: "15px",
 					}}>
-					{userInfo.City}, {userInfo.Country}
+					{props.userStore.City}, {props.userStore.Country}
 				</Typography>
 			</div>
 			<div>
@@ -100,9 +100,10 @@ function UserInfo(userData) {
 }
 
 const mapStateToProps = (state) => {
-	const userData = state.userReducer.user;
+	console.log('state', state);
+	const {userStore} = state.userReducer;
 	return {
-		userData,
+		userStore,
 	};
 };
 

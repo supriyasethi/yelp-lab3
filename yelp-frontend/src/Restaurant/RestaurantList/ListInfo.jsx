@@ -10,6 +10,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 
 import axios from "axios";
+import serverUrl from "../../config";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -45,9 +46,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ListInfo() {
-	//let httpURL = "http://localhost:3001";
-	let httpURL = "http://54.219.75.46:3001";
+function ListInfo() {	
 	let history = useHistory();
 	const [checked, setChecked] = React.useState([1]);
 	let [state, setState] = React.useState({
@@ -64,12 +63,13 @@ function ListInfo() {
 		console.log("data", data);
 		axios.defaults.withCredentials = true;
 		axios
-			.get(httpURL+"/get/bizlist", {
+			.get(serverUrl+"get/bizlist", {
 				params: {
 					userId: data,
 				},
 			})
 			.then((response) => {
+				console.log(response);
 				//update the state with the response data
 				for (var i = 0; i < response.data.length; i++) {
 					if (prev === response.data[i].name){
@@ -111,7 +111,7 @@ function ListInfo() {
         console.log('orderinfo', orderInfo);
 		axios.defaults.withCredentials = true;
 		axios
-			.post(httpURL+"/update/order", orderInfo)
+			.post(serverUrl+"update/order", orderInfo)
 			.then((response) => {
 				console.log("Status code: ", response.status);
 				if (response.status === 200) {
