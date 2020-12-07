@@ -80,7 +80,7 @@ module.exports = buildSchema(`
 	}
 
     type User {
-		userid: ID!
+		_id: String
 		firstname: String
 		lastname: String
 		dateofbirth: String
@@ -94,8 +94,8 @@ module.exports = buildSchema(`
 		yelpingsince: String
 		thingsilove: String
 		findmein: String
-		order: [UserOrder]
-		review: [UserReview]
+		orders: [UserOrder]
+		reviews: [UserReview]
 	}
 	
 

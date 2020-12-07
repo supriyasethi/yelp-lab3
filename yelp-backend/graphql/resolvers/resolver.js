@@ -152,6 +152,7 @@ async function fetchUser(msg, res) {
 			{ _id: message.userId },
 			function (error, data) {
 				if (error) {
+					return
 					console.log("error", error);					
 				} else {
 					//console.log("data", data);					
