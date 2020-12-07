@@ -1,6 +1,90 @@
 const Users = require("../../models/User");
 const Restaurants = require("../../models/Restaurant");
 const Events = require("../../models/Event");
+var passwordHash = require("password-hash");
+const jwt = require("jsonwebtoken");
+var passwordHash = require("password-hash");
+const { secret } = require("../../utils/config");
+
+async function loginUser(msg, res) {
+	let LoginOutput = {};	
+	console.log("Inside Login Post Request");
+	console.log("Req Body : ", msg.body);
+	let message = msg.userLogin;
+	try {
+		const user = await Users.findOne({
+			"login.username": message.username,
+		});
+		if (user) {
+			if (passwordHash.verify(message.password, user.login.password)) {
+				const payload = {
+					_id: user._id,
+					username: user.login.username,
+					firstname: user.firstname,
+					lastname: user.lastname,
+				};
+				const token = jwt.sign(payload, secret, {
+					expiresIn: 1008000
+				});
+				LoginOutput = {
+					token,
+					message : "Login Successful"
+				}	
+			}
+		} else {
+			LoginOutput = {
+				token : '',
+				message : "Invalid Credentials"
+			};	
+		}
+		return LoginOutput;
+	} catch (error) {
+		console.log(error);
+		LoginOutput = {
+			token : '',
+			message : "Error Occured"
+		};	
+		return LoginOutput;
+	}	
+}
+
+async function loginBiz(msg, res) {
+	LoginOutput = {};
+	console.log("Inside Login Post Request");
+	console.log("Req Body : ", msg);
+	let message = msg.restaurantLogin;
+	try {
+		const biz = await Restaurants.findOne({
+			"login.username": message.username,
+		});
+		console.log(biz);
+		if (passwordHash.verify(message.password, biz.login.password)) {
+			const payload = { _id: biz._id, username: biz.login.username };
+			const token = jwt.sign(payload, secret, {
+				expiresIn: 1008000,
+			});			
+			LoginOutput = {
+				token,
+				message : "Login Successful"
+			}			
+		} else {			
+			LoginOutput = {
+				token : '',
+				message : "Invalid Credentials"
+			};			
+		}
+		return LoginOutput;
+	} catch (error) {
+		console.log(error);
+		LoginOutput = {
+			token : '',
+			message : "Error Occured"
+		};	
+		return LoginOutput;
+	}	
+}
+
+
 
 async function fetchHomeBiz(msg, res) {		
 	let message = msg;
@@ -70,10 +154,11 @@ async function fetchUser(msg, res) {
 				if (error) {
 					console.log("error", error);					
 				} else {
-					console.log("data", data);					
+					//console.log("data", data);					
 				}
 			}
 		);
+		console.log("data", user);					
 		return user;
 	} catch (error) {
 		console.log("error", error);		
@@ -432,6 +517,8 @@ async function updateOrders(msg, res) {
 
 
 module.exports = {	
+	loginUser,
+	loginBiz,
 	fetchHomeBiz,
 	fetchUser,
 	fetchBiz,

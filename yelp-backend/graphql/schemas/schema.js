@@ -40,6 +40,16 @@ module.exports = buildSchema(`
 		orderstatus: String
 	}
 
+	type UserOrder {
+		_id: ID
+		restaurantid: String 
+		restaurantname: String
+		orderitem: String
+		delieveryoption: String
+		delieverystatus: String
+		orderstatus: String
+	}
+
 	type Review {
 		_id: ID
 		userid: String
@@ -48,6 +58,12 @@ module.exports = buildSchema(`
 		rating: String
 	}
 
+	type UserReview {
+		_id: ID
+		restaurantid: String		
+		review: String
+		rating: String
+	}
 	type Restaurant {
 		_id: ID!
 		name: String
@@ -78,8 +94,8 @@ module.exports = buildSchema(`
 		yelpingsince: String
 		thingsilove: String
 		findmein: String
-		order: [Order]
-		review: [Review]
+		order: [UserOrder]
+		review: [UserReview]
 	}
 	
 
@@ -95,6 +111,16 @@ module.exports = buildSchema(`
 		fetchHomeBiz(keyword: String, location: String ): [MenuOutput!]
         fetchBiz(restaurantId:String): Restaurant!
         fetchUser(userId:String): User!
+	}
+
+	input Login {
+		username: String
+		password: String		
+	}
+
+	type LoginOutput {
+		token: String
+		message: String
 	}
 
 	input MenuInput {
@@ -182,7 +208,11 @@ module.exports = buildSchema(`
 		_id: String
 		menu: [Menu]
 	}
+
+	
 	type RootMutation {
+		loginUser(userLogin: Login) : LoginOutput
+		loginBiz(restaurantLogin: Login) : LoginOutput
 		insertMenu(menuInput: MenuInput): MenuOutput1
 		insertEvent(eventInput: EventInput)	: Event 
 		updateBiz(updateBizInput: UpdateBizInput): Restaurant	
