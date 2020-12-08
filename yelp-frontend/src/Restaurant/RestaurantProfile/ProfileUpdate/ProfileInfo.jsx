@@ -9,6 +9,8 @@ import { useHistory } from "react-router-dom";
 import serverUrl from "../../../config.js";
 import { updateRestaurantProfile } from "../../../js/actionconstants/action-types";
 import { getProfile } from "../../../js/actions/restaurantActions";
+import { gql } from "apollo-boost";
+import { useMutation } from "react-apollo-hooks";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -45,6 +47,32 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+const UPDATE_PROFILE = gql`
+	mutation updateBiz(
+		$restaurantId: String
+		$name: String
+		$description: String
+		$address: String
+		$timing: String
+		$website: String
+		$phonenumber: String
+	) {
+		updateBiz(
+			updateBizInput: {
+				restaurantId: $restaurantId
+				name: $name
+				description: $description
+				address: $address
+				timing: $timing
+				website: $website
+				phonenumber: $phonenumber
+			}
+		) {
+			statuscode
+		}
+	}
+`;
+
 function ProfileInfo(props) {
 	const dispatch = useDispatch();
 	//let restaurantInfo = restaurantData.restaurantData.restaurant;
@@ -61,16 +89,16 @@ function ProfileInfo(props) {
 		website: props.restaurantStore.Website,
 		restaurantId: null,
 	});
-
+	const [updateprofile, { error, data }] = useMutation(UPDATE_PROFILE);
 	let history = useHistory();
 	const classes = useStyles();
 
 	function handleFileSelected(e) {
 		setpicture(URL.createObjectURL(e.target.files[0]));
 	}
-
+	const res = localStorage.getItem("restaurant_id");
 	function handleChange(e) {
-		const res = localStorage.getItem("restaurant_id");
+		
 		console.log("handlechange state", state);
 		const value = e.target.value;
 		setState({
@@ -86,35 +114,64 @@ function ProfileInfo(props) {
 			picture,
 		};
 		console.log("state in profilinfo", state);
-		axios.defaults.withCredentials = true;
-		axios
-			.post(serverUrl + "update/bizprofile", state)
-			.then((response) => {
-				console.log("Status code: ", response.status);
-				if (response.status === 200) {
-					let payload = {
-						Name: state.name,
-						Description: state.description,
-						Address: state.address,
-						Phonenumber: state.phonenumber,
-						Timing: state.timing,
-						Website: state.website,
-					};
-					// restaurantInfo.Name = state.name;
-					// restaurantInfo.Description = state.description;
-					// restaurantInfo.Address = state.address;
-					// restaurantInfo.Phonenumber = state.phonenumber;
-					// restaurantInfo.Timing = state.timing;
-					// restaurantInfo.Website = state.website;
-					//let payload = restaurantInfo;
-					dispatch(getProfile(payload));
-					//updateRestaurantProfile(payload);
-					history.push("/bizp");
-				}
-			})
-			.catch((error) => {
-				console.log("error", error);
-			});
+		updateprofile({
+			variables: {
+				restaurantId: res,
+				name: state.name,
+				description: state.description,
+				address: state.address,
+				timing: state.timing,
+				website: state.website,
+				phonenumber: state.phonenumber,
+			},
+		});
+
+		console.log(data);
+		if (data) {
+			let payload = {
+				Name: state.name,
+				Description: state.description,
+				Address: state.address,
+				Phonenumber: state.phonenumber,
+				Timing: state.timing,
+				Website: state.website,
+			};
+			dispatch(getProfile(payload));
+			//			e.preventDefault();
+			history.push("/bizp");
+		}
+		if (error) {
+			console.log("error", error.response);
+		}
+		// axios.defaults.withCredentials = true;
+		// axios
+		// 	.post(serverUrl + "update/bizprofile", state)
+		// 	.then((response) => {
+		// 		console.log("Status code: ", response.status);
+		// 		if (response.status === 200) {
+		// 			let payload = {
+		// 				Name: state.name,
+		// 				Description: state.description,
+		// 				Address: state.address,
+		// 				Phonenumber: state.phonenumber,
+		// 				Timing: state.timing,
+		// 				Website: state.website,
+		// 			};
+		// 			// restaurantInfo.Name = state.name;
+		// 			// restaurantInfo.Description = state.description;
+		// 			// restaurantInfo.Address = state.address;
+		// 			// restaurantInfo.Phonenumber = state.phonenumber;
+		// 			// restaurantInfo.Timing = state.timing;
+		// 			// restaurantInfo.Website = state.website;
+		// 			//let payload = restaurantInfo;
+		// 			dispatch(getProfile(payload));
+		// 			//updateRestaurantProfile(payload);
+		// 			history.push("/bizp");
+		// 		}
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log("error", error);
+		// 	});
 	}
 
 	function handleCancel() {

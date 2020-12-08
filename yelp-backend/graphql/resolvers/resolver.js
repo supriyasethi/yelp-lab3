@@ -193,19 +193,19 @@ async function fetchBiz(msg, res) {
 }
 
 async function fetchEvent(msg, res) {
-	let message = msg.query;
+	let message = msg;
 	console.log("Inside event fetch request");
-	console.log(message.restaurantId);
+	console.log(message);
 	const eventdata = [];
 	try {
-		await Events.find(
+		let event = await Events.find(
 			{ restaurantId: message.restaurantId },
 			function (error, data) {
 				if (error) {
 					console.log("error", error);					
 					res.json(500).send(error);
 				} else {
-					console.log(data);
+					//console.log(data);
 					for (let i = 0; i < data.length; i++) {
 						const tempObj = {};
 
@@ -218,14 +218,17 @@ async function fetchEvent(msg, res) {
 						tempObj.usersregistered = data[i].usersregistered;						
 						eventdata.push(tempObj);
 					}
-					console.log(eventdata);					
-					res.status(200).send(eventdata);
+					//console.log(eventdata);					
+					//res.status(200).send(eventdata);
 				}
 			}
 		);
+		console.log('eventdata',eventdata);
+		return eventdata;
 	} catch (error) {
-		console.log("error", error);		
-		res.status(500).send(error);
+		console.log("error", error);	
+		return error;	
+		//res.status(500).send(error);
 	}	
 }
 
@@ -257,9 +260,9 @@ async function insertEvent(msg, res) {
 				//res.status(200).json(data);
 			}
 		});    
-		//return insertOutput;
 		console.log('event',insertOutput);
-		return event;
+		return insertOutput;		
+		//return event;
 	} catch (error) {
 		console.log("error", error);	
 		insertOutput.statuscode = "500";	
@@ -299,8 +302,8 @@ async function insertMenu(msg, res) {
 				}
 			}
 		).select('menu');
-		console.log(menu);
-		return menu;
+		console.log(insertOutput);
+		return insertOutput;
 		//return (insertOutput);		
 	} catch (error) {
 		console.log("error", error);	
@@ -446,6 +449,7 @@ async function updateUser(msg, res) {
 }
 
 async function updateBiz(msg, res) {	
+	let updateOutput = {};
 	console.log("Inside Update Restaurant Profile Post Request");
 	console.log("Req Body : ", msg);
 	let message = msg.updateBizInput;
@@ -465,17 +469,22 @@ async function updateBiz(msg, res) {
 			{ upsert: true },
 			function (error, data) {
 				if (error) {
+					updateOutput.statuscode = "500";						
 					console.log("error", error);					
 				} else {
+					updateOutput.statuscode = "200";		
 					console.log("data", data);					
 				}
 			}
 		);
-		console.log(restaurant);
-		return restaurant;
+		console.log(updateOutput);
+		//return restaurant;
+		return updateOutput;	
 	} catch (error) {
-		console.log("error", error);		
-		return error;		
+		console.log("error", error);
+		updateOutput.statuscode = "500";		
+		return updateOutput;
+		//return error;		
 	}	
 }
 

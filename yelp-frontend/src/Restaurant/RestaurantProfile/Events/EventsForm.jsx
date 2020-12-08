@@ -6,6 +6,8 @@ import axios from "axios";
 //import ImageUploader from 'react-images-upload';
 import { useHistory } from "react-router-dom";
 import serverUrl from "../../../config";
+import { gql } from "apollo-boost";
+import { useMutation } from "react-apollo-hooks";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,6 +45,31 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+const INSERT_EVENT = gql`
+	mutation insertEvent(
+		$name: String
+		$description: String
+		$time: String
+		$date: String
+		$location: String
+		$hashtags: String
+		$resid: String
+	) {
+		insertEvent(
+			eventInput: {
+				name: $name
+				description: $description
+				time: $time
+				date: $date
+				location: $location
+				hashtags: $hashtags
+				resid: $resid
+			}
+		) {
+			statuscode
+		}
+	}
+`;
 function EventsForm() {
   
 	const dispatch = useDispatch();
@@ -61,9 +88,10 @@ function EventsForm() {
 
 	let history = useHistory();
 	const classes = useStyles();
-
+	const [createEvent, { error, data }] = useMutation(INSERT_EVENT);
+	const res = localStorage.getItem("restaurant_id");
 	function handleChange(e) {
-		const res = localStorage.getItem("restaurant_id");
+		
 		console.log("handlechange state", state);
 		const value = e.target.value;
 		setState({
@@ -75,19 +103,38 @@ function EventsForm() {
 
 	function handleSaveChanges() {
 		console.log("state", state);
+		createEvent({
+			variables: {
+				name: state.eventname,
+				description: state.description,
+				time: state.time,
+				date: state.date,
+				location: state.location,
+				hashtags: state.hashtag,
+				resid: res
+			},
+		});
+		console.log(data);
+		if (data) {			
+//			e.preventDefault();
+			history.push("/bizp");
+		}
+		if (error) {
+			console.log("error", error.response);
+		}
 
-		axios.defaults.withCredentials = true;
-		axios
-			.post(serverUrl + "/insert/event", state)
-			.then((response) => {
-				console.log("Status code: ", response.status);
-				if (response.status === 200) {  					      
-					history.push("/bizp");
-				}
-			})
-			.catch((error) => {
-				console.log("error", error.response);
-			});
+		// axios.defaults.withCredentials = true;
+		// axios
+		// 	.post(serverUrl + "/insert/event", state)
+		// 	.then((response) => {
+		// 		console.log("Status code: ", response.status);
+		// 		if (response.status === 200) {  					      
+		// 			history.push("/bizp");
+		// 		}
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log("error", error.response);
+		// 	});
 	}
 
 	function handleCancel() {

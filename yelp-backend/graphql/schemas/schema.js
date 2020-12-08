@@ -19,13 +19,10 @@ module.exports = buildSchema(`
 	}
 
 	type Event {		
-		_id: ID
-		name: String
-		description: String
+		name: String		
 		time: String
 		date: String
-		location: String
-		hashtags:String
+		location: String		
 		restaurantId: String
 		usersregistered: [UserRegistered]			
 	}
@@ -110,7 +107,8 @@ module.exports = buildSchema(`
 	type  RootQuery {
 		fetchHomeBiz(keyword: String, location: String ): [MenuOutput!]
         fetchBiz(restaurantId:String): Restaurant!
-        fetchUser(userId:String): User!
+		fetchUser(userId:String): User!
+		fetchEvent(restaurantId: String) : [Event!]
 	}
 
 	input Login {
@@ -135,12 +133,10 @@ module.exports = buildSchema(`
 
 	input UpdateBizInput {
 		restaurantId: String
-		name: String
-		city: String
+		name: String		
 		description: String
 		address: String
-		timing: String
-		emailid: String
+		timing: String		
 		website: String
 		phonenumber: String
 	}	
@@ -213,9 +209,9 @@ module.exports = buildSchema(`
 	type RootMutation {
 		loginUser(userLogin: Login) : LoginOutput
 		loginBiz(restaurantLogin: Login) : LoginOutput
-		insertMenu(menuInput: MenuInput): MenuOutput1
-		insertEvent(eventInput: EventInput)	: Event 
-		updateBiz(updateBizInput: UpdateBizInput): Restaurant	
+		insertMenu(menuInput: MenuInput): insertOutput
+		insertEvent(eventInput: EventInput)	: insertOutput
+		updateBiz(updateBizInput: UpdateBizInput): updateOutput	
         updateOrders(updateOrderInput: UpdateOrderInput): [Order]	
         updateUser(updateUserInput: UpdateUserInput): User
 		insertReview(reviewInput: ReviewInput): insertOutput
