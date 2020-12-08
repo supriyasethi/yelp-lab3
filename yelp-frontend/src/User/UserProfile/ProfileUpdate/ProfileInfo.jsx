@@ -19,6 +19,8 @@ import { useHistory } from "react-router-dom";
 import serverUrl from "../../../config.js";
 import { updateUserProfile } from "../../../js/actionconstants/action-types";
 import { getUserProfile } from "../../../js/actions/userActions";
+import { gql } from "apollo-boost";
+import { useMutation } from "react-apollo-hooks";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -55,6 +57,42 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+const UPDATE_PROFILE = gql`
+	mutation updateUser(
+		$userid: String
+		$firstname: String
+		$lastname: String
+		$dateofbirth: String
+		$state: String
+		$country: String
+		$nickname: String
+		$gender: String
+		$phonenumber: String
+		$yelpingsince: String
+		$thingsilove: String
+		$findmein: String
+	) {
+		updateUser(
+			updateUserInput: {
+				userid: $userid
+				firstname: $firstname
+				lastname: $lastname
+				dateofbirth: $dateofbirth
+				state: $state
+				country: $country
+				nickname: $nickname
+				gender: $gender
+				phonenumber: $phonenumber
+				yelpingsince: $yelpingsince
+				thingsilove: $thingsilove
+				findmein: $findmein
+			}
+		) {
+			statuscode
+		}
+	}
+`;
+
 function ProfileInfo(props) {
 	const dispatch = useDispatch();
 	//let userInfo = userData.userData;
@@ -76,6 +114,7 @@ function ProfileInfo(props) {
 		userid: null,
 	});
 
+	const [updateprofile, { error, data }] = useMutation(UPDATE_PROFILE);
 	let history = useHistory();
 	const classes = useStyles();
 
@@ -102,7 +141,7 @@ function ProfileInfo(props) {
 	// };
 
 	function onFileChange(event) {
-		console.log('nside file change');
+		console.log("nside file change");
 		setSelectedFile({ selectedFile: event.target.files[0] });
 		console.log(selectedFile);
 	}
@@ -141,54 +180,76 @@ function ProfileInfo(props) {
 			);
 		}
 	}
-	// , {
-	// 		headers: {
-	// 			"Content-Type": "multipart/form-data",
-	// 		},
-	//});
-
-	// 	console.log("res", res.data.filePath);
-	// 	const { fileName, filePath } = res.data;
-	// 	console.log("filePath", filePath);
-	// 	setUploadedFile({ fileName, filePath });
-	// 	console.log("uploadedfle", uploadedFile);
-	// } catch (err) {
-	// 	if (err.response.status === 500) {
-	// 		console.lg("There was a problem with the sever");
-	// 	} else {
-	// 		console.log(err.response.data.msg);
-	// 	}
-	// }
 
 	function handleSaveChanges() {
 		console.log(state);
-		axios.defaults.withCredentials = true;
-		axios
-			.post(serverUrl + "update/userprofile", state)
-			.then((response) => {
-				console.log("Status code: ", response.status);
-				if (response.status === 200) {
-					let payload = {
-					Firstname : state.firstname,
-					Lastname : state.lastname,
-					Nickname : state.nickname,
-					Gender : state.gender,
-					Phonenumber : state.phonenumber,
-					Dteofbirth : state.birthday,
-					State : state.state,
-					Country : state.country,
-					Thingsilove : state.thingsilove,
-					Yelpingsince : state.yelpingsince,
-					Findmein : state.findmein 
-					}					
-					console.log("payload in rofileinfo", payload);
-					dispatch(getUserProfile(payload));
-					history.push("/userp");
-				}
-			})
-			.catch((error) => {
-				console.log("error", error.response);
-			});
+		console.log("state in profilinfo", state);
+		updateprofile({
+			variables: {
+				userid: user,
+				firstname: state.firstname,
+				lastname: state.lastname,
+				dateofbirth: state.birthday,
+				state: state.state,
+				country: state.country,
+				nickname: state.nickname,
+				gender: state.gender,
+				phonenumber: state.phonenumber,
+				yelpingsince: state.yelpingsince,
+				thingsilove: state.thingsilove,
+				findmein: state.findmein,
+			},
+		});
+
+		console.log(data);
+		if (data) {
+			let payload = {
+				Firstname: state.firstname,
+				Lastname: state.lastname,
+				Nickname: state.nickname,
+				Gender: state.gender,
+				Phonenumber: state.phonenumber,
+				Dteofbirth: state.birthday,
+				State: state.state,
+				Country: state.country,
+				Thingsilove: state.thingsilove,
+				Yelpingsince: state.yelpingsince,
+				Findmein: state.findmein,
+			};
+			console.log("payload in rofileinfo", payload);
+			dispatch(getUserProfile(payload));
+			history.push("/userp");
+		}
+		if (error) {
+			console.log("error", error.response);
+		}
+		// axios.defaults.withCredentials = true;
+		// axios
+		// 	.post(serverUrl + "update/userprofile", state)
+		// 	.then((response) => {
+		// 		console.log("Status code: ", response.status);
+		// 		if (response.status === 200) {
+		// 			let payload = {
+		// 			Firstname : state.firstname,
+		// 			Lastname : state.lastname,
+		// 			Nickname : state.nickname,
+		// 			Gender : state.gender,
+		// 			Phonenumber : state.phonenumber,
+		// 			Dteofbirth : state.birthday,
+		// 			State : state.state,
+		// 			Country : state.country,
+		// 			Thingsilove : state.thingsilove,
+		// 			Yelpingsince : state.yelpingsince,
+		// 			Findmein : state.findmein
+		// 			}
+		// 			console.log("payload in rofileinfo", payload);
+		// 			dispatch(getUserProfile(payload));
+		// 			history.push("/userp");
+		// 		}
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log("error", error.response);
+		// 	});
 	}
 
 	function handleCancel() {
@@ -514,8 +575,8 @@ function ProfileInfo(props) {
 	);
 }
 
-const mapStateToProps = (state) => {	
-	const {userStore} = state.userReducer;
+const mapStateToProps = (state) => {
+	const { userStore } = state.userReducer;
 	return {
 		userStore,
 	};

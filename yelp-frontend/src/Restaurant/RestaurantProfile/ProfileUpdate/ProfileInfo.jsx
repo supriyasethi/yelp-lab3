@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const UPDATE_PROFILE = gql`
+const UPDATE_USER_PROFILE = gql`
 	mutation updateBiz(
 		$restaurantId: String
 		$name: String
@@ -73,6 +73,15 @@ const UPDATE_PROFILE = gql`
 	}
 `;
 
+const UPLOAD_FILE = gql`
+  mutation SingleUpload($file: Upload!) {
+    singleUpload(file: $file) {
+      filename
+      mimetype
+      encoding
+    }
+  }
+`;
 function ProfileInfo(props) {
 	const dispatch = useDispatch();
 	//let restaurantInfo = restaurantData.restaurantData.restaurant;
@@ -89,12 +98,16 @@ function ProfileInfo(props) {
 		website: props.restaurantStore.Website,
 		restaurantId: null,
 	});
-	const [updateprofile, { error, data }] = useMutation(UPDATE_PROFILE);
+	//const [singleupload, { error, data }] = useMutation(UPDATE_FILE);
+	const [updateprofile, { error, data }] = useMutation(UPDATE_USER_PROFILE);
+	
 	let history = useHistory();
 	const classes = useStyles();
 
 	function handleFileSelected(e) {
-		setpicture(URL.createObjectURL(e.target.files[0]));
+		//setpicture(URL.createObjectURL(e.target.files[0]));
+		const file = e.target.file[0];
+		//singleUpload({ variables: { file: file } });
 	}
 	const res = localStorage.getItem("restaurant_id");
 	function handleChange(e) {
@@ -204,7 +217,7 @@ function ProfileInfo(props) {
 						justifyContent: "center",
 					}}>
 					Your Profile Photo
-					<input type='file' onChange={handleFileSelected} />
+					<input type='file' onChange={(event) => handleFileSelected(event)} />
 				</Typography>
 				<img
 					src={picture}

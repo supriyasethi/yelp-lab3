@@ -204,7 +204,7 @@ module.exports = buildSchema(`
 		_id: String
 		menu: [Menu]
 	}
-
+	
 	
 	type RootMutation {
 		loginUser(userLogin: Login) : LoginOutput
@@ -213,9 +213,9 @@ module.exports = buildSchema(`
 		insertEvent(eventInput: EventInput)	: insertOutput
 		updateBiz(updateBizInput: UpdateBizInput): updateOutput	
         updateOrders(updateOrderInput: UpdateOrderInput): [Order]	
-        updateUser(updateUserInput: UpdateUserInput): User
+        updateUser(updateUserInput: UpdateUserInput): updateOutput	
 		insertReview(reviewInput: ReviewInput): insertOutput
-		insertOrder(orderInput: OrderInput): [Order]
+		insertOrder(orderInput: OrderInput): [Order]		
 	}
 
 	schema {
